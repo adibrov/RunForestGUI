@@ -28,6 +28,8 @@ class segViewer(QtGui.QMainWindow):
         self.rubX1 = 0
         self.rubY1 = 0
 
+        self.flag = False
+
         self.defRawPath = "./data/rawData.tif"
         self.defGroundPath = "./data/groundTruth.tif"
         self.toSegment = "./data/rawData.tif"
@@ -75,12 +77,12 @@ class segViewer(QtGui.QMainWindow):
         # Creating the "Add" button
         btn = QtGui.QPushButton("Add", self)
         btn.clicked.connect(self.add)
-        btn.move(1010, 10)
+        btn.move(1010, 30)
 
         # Creating the "Segment" button
         btn = QtGui.QPushButton("Segment", self)
         btn.clicked.connect(self.segment)
-        btn.move(1010, 30)
+        btn.move(1010, 50)
 
         # Creating the scroll area
         self.scrollArea = QtGui.QScrollArea()
@@ -173,7 +175,13 @@ class segViewer(QtGui.QMainWindow):
         #execfile('./forest_training.py')
         #execfile('./forest_testing.py')
         forest_training.trainingExec(self.rawList, self.GTList)
-        forest_testing.classifyExec(path=self.toSegment)
+        if (len(self.rawList) != 0 and len(self.GTList) != 0):
+            self.flag = True
+
+        if self.flag:
+            forest_testing.classifyExec(path=self.toSegment)
+        else:
+            print "empty training set"
 
 
 ################################################################

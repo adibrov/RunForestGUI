@@ -82,7 +82,7 @@ class segViewer(QtGui.QMainWindow):
         # Creating the "Segment" button
         btn = QtGui.QPushButton("Segment", self)
         btn.clicked.connect(self.segment)
-        btn.move(1010, 50)
+        btn.move(1010, 100)
 
         # Creating the scroll area
         self.scrollArea = QtGui.QScrollArea()

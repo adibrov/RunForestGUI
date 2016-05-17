@@ -1,2 +1,5 @@
 *.pyc
 *.py~
+*.npy
+*.png
+*.tif

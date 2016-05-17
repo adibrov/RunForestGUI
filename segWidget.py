@@ -30,6 +30,12 @@ class segViewer(QtGui.QMainWindow):
 
         self.defRawPath = "./data/rawData.tif"
         self.defGroundPath = "./data/groundTruth.tif"
+        self.toSegment = "./data/rawData.tif"
+
+        if len(sys.argv) > 1:
+            self.toSegment = sys.argv[1]
+            print self.toSegment
+
 
         self.rawList = []
         self.GTList = []
@@ -167,7 +173,7 @@ class segViewer(QtGui.QMainWindow):
         #execfile('./forest_training.py')
         #execfile('./forest_testing.py')
         forest_training.trainingExec(self.rawList, self.GTList)
-        forest_testing.classifyExec()
+        forest_testing.classifyExec(path=self.toSegment)
 
 
 ################################################################
@@ -188,27 +194,24 @@ class segViewer(QtGui.QMainWindow):
 
 
     def open(self, fileName = None):
-        if fileName is None:
 
-            path  = self.defRawPath
-            fileName = QtGui.QImage(path)
+        path  = self.defRawPath
+        fileName = QtGui.QImage(path)
+        image = QtGui.QImage(fileName)
+        if image.isNull():
+            QtGui.QMessageBox.information(self, "Image Viewer",
+                    "Cannot load %s." % fileName)
+            return
 
-        if fileName:
-            image = QtGui.QImage(fileName)
-            if image.isNull():
-                QtGui.QMessageBox.information(self, "Image Viewer",
-                        "Cannot load %s." % fileName)
-                return
+        self.imageLabel.setPixmap(QtGui.QPixmap.fromImage(image))
+        self.scaleFactor = 1.0
 
-            self.imageLabel.setPixmap(QtGui.QPixmap.fromImage(image))
-            self.scaleFactor = 1.0
+        self.printAct.setEnabled(True)
+        self.fitToWindowAct.setEnabled(True)
+        self.updateActions()
 
-            self.printAct.setEnabled(True)
-            self.fitToWindowAct.setEnabled(True)
-            self.updateActions()
-
-            if not self.fitToWindowAct.isChecked():
-                self.imageLabel.adjustSize()
+        if not self.fitToWindowAct.isChecked():
+            self.imageLabel.adjustSize()
 
     def print_(self):
         dialog = QtGui.QPrintDialog(self.printer, self)
